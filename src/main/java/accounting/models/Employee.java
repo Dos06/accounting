@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "employees")
@@ -18,4 +20,7 @@ public class Employee {
 
     @Column
     private String name;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Item> items = new ArrayList<>();
 }

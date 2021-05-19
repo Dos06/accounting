@@ -1,6 +1,5 @@
 package accounting.services.impl;
 
-import accounting.models.Employee;
 import accounting.models.Item;
 import accounting.repositories.ItemRepository;
 import accounting.services.ItemService;
@@ -17,11 +16,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> getAll() {
         return repository.findAll();
-    }
-
-    @Override
-    public List<Item> getAllByEmployee(Employee employee) {
-        return repository.findAllByEmployee(employee);
     }
 
     @Override

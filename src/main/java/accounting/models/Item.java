@@ -20,8 +20,5 @@ public class Item {
     private String name;
 
     @Column
-    private Integer price;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Employee employee;
+    private Integer price = 0;
 }
