@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -32,5 +33,11 @@ public class MainController {
     public ResponseEntity<?> getItems() {
         List<Item> items = itemService.getAll();
         return ResponseEntity.ok(Objects.requireNonNullElse(items, HttpEntity.EMPTY));
+    }
+
+    @GetMapping(value = "/employees/{id}")
+    public ResponseEntity<?> getEmployeeById(@PathVariable Long id) {
+        Employee employee = employeeService.getOne(id);
+        return ResponseEntity.ok(Objects.requireNonNullElse(employee, HttpEntity.EMPTY));
     }
 }

@@ -25,7 +25,7 @@ export default function Employees() {
             right: true,
             cell: (row) => (
                 <>
-                    <Link to={'/'}>
+                    <Link to={`/employee/${row.id}`}>
                         <Button variant={'info'} className={'mr-2'}>DETAILS</Button>
                     </Link>
                     <Button variant={'danger'} onClick={() => {
@@ -54,7 +54,7 @@ export default function Employees() {
 
     const loadData = () => {
         DbService.getAllByTable(TABLE_EMPLOYEES).then(response => {
-            setData((response.data).map(r => {
+            setData((response.data).reverse().map(r => {
                 let amount = 0
                 let price = 0
                 r.items.forEach(i => {
