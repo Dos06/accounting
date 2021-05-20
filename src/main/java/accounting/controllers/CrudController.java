@@ -1,5 +1,7 @@
 package accounting.controllers;
 
+import accounting.controllers.requests.EmployeeRequest;
+import accounting.controllers.requests.ItemsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -16,16 +18,26 @@ public class CrudController {
     private ItemService itemService;
 
     @PostMapping(value = "/add/employees")
-    public ResponseEntity<?> addCategory(@RequestBody String name) {
+    public ResponseEntity<?> addEmployee(@RequestBody EmployeeRequest request) {
         Employee employee = new Employee();
-        employee.setName(name);
+        employee.setName(request.getName());
         return ResponseEntity.ok(employeeService.add(employee));
     }
 
     @DeleteMapping(value = "/delete/employees")
-    public ResponseEntity<?> deleteCategory(@RequestBody String id) {
+    public ResponseEntity<?> deleteEmployee(@RequestBody String id) {
         Employee employee = employeeService.getOne(Long.parseLong(id));
         employeeService.delete(employee);
+        return ResponseEntity.ok(HttpEntity.EMPTY);
+    }
+
+    @PutMapping(value = "/edit/employees")
+    public ResponseEntity<?> editEmployee(@RequestBody ItemsRequest request) {
+        Employee employee = employeeService.getOne(request.getEmployeeId());
+        if (employee != null) {
+            employee.setItems(request.getItems());
+            return ResponseEntity.ok(employeeService.save(employee));
+        }
         return ResponseEntity.ok(HttpEntity.EMPTY);
     }
 }
