@@ -1,4 +1,4 @@
-import {Navbar} from "react-bootstrap";
+import {Nav, Navbar} from "react-bootstrap";
 import {Link} from "react-router-dom";
 
 export default function Header() {
@@ -15,6 +15,10 @@ export default function Header() {
                     />
                 </Link>
             </Navbar.Brand>
+            <Nav>
+                <Nav.Link><Link to={'/'} className={'text-light'}>EMPLOYEES</Link></Nav.Link>
+                <Nav.Link><Link to={'/items'} className={'text-light'}>ALL ITEMS</Link></Nav.Link>
+            </Nav>
         </Navbar>
     )
 }

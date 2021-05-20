@@ -1,6 +1,6 @@
 import DataTable from "react-data-table-component";
 import {Button, Form, Modal} from "react-bootstrap";
-import DbService, {DELETE, TABLE_EMPLOYEES} from "../_services/DbService";
+import DbService, {ADD, DELETE, TABLE_EMPLOYEES} from "../_services/DbService";
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 
@@ -73,7 +73,7 @@ export default function Employees() {
     }
 
     async function addItem(data) {
-        DbService.change('add', TABLE_EMPLOYEES, data)
+        DbService.change(ADD, TABLE_EMPLOYEES, data)
             .then(_ => loadData())
             .catch(e => console.log(e))
     }
@@ -100,7 +100,6 @@ export default function Employees() {
     useEffect(() => {
         loadData()
     }, [])
-
 
     return (
         <>
