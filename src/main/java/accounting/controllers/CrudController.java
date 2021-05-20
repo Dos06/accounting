@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import accounting.models.*;
 import accounting.services.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class CrudController {
@@ -35,7 +38,11 @@ public class CrudController {
     public ResponseEntity<?> editEmployee(@RequestBody ItemsRequest request) {
         Employee employee = employeeService.getOne(request.getEmployeeId());
         if (employee != null) {
-            employee.setItems(request.getItems());
+            List<Item> items = new ArrayList<>();
+            for (Long id : request.getItemIds()) {
+                items.add(itemService.getOne(id));
+            }
+            employee.setItems(items);
             return ResponseEntity.ok(employeeService.save(employee));
         }
         return ResponseEntity.ok(HttpEntity.EMPTY);

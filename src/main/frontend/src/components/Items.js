@@ -1,10 +1,13 @@
 import {useEffect, useState} from "react";
-import DbService, {TABLE_EMPLOYEES} from "../_services/DbService";
-import {Link} from "react-router-dom";
-import {Button} from "react-bootstrap";
+import DbService, {TABLE_EMPLOYEES, TABLE_ITEMS} from "../_services/DbService";
+import {Button, Form, Modal} from "react-bootstrap";
 import DataTable from "react-data-table-component";
+import Select from "react-select";
 
 export default function Items(props) {
+    const [optionItems, setOptItems] = useState([])
+    const [items, setItems] = useState([])
+
     const columns = [
         {
             name: '№',
@@ -21,14 +24,6 @@ export default function Items(props) {
             selector: 'price',
             sortable: true,
         },
-        {
-            right: true,
-            cell: (row) => (
-                <Button variant={'danger'} onClick={() => {
-                    // deleteItem(row.id)
-                }}>DELETE</Button>
-            )
-        }
     ]
 
     const paginationOptions = {
@@ -37,6 +32,10 @@ export default function Items(props) {
         selectAllRowsItem: true,
         selectAllRowsItemText: 'All'
     }
+
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     const [employee, setEmployee] = useState({})
     const [data, setData] = useState([])
@@ -59,6 +58,35 @@ export default function Items(props) {
                 }));
                 setTotalPrice(price)
             })
+
+        DbService.getAllByTable(TABLE_ITEMS)
+            .then(response => {
+                setOptItems(response.data.map(i => {
+                    return {
+                        value: i.id,
+                        label: i.name,
+                    }
+                }))
+            })
+    }
+
+    const onSubmitForm = event => {
+        let employeeId = employee.id
+        let itemIds = []
+        for (let i = 0; i < items.length; i++) {
+            itemIds.push(items[i].value)
+        }
+        const data = {employeeId, itemIds}
+        console.log(data)
+        addItem(data)
+            .catch(e => console.log(e))
+        event.preventDefault()
+    }
+
+    async function addItem(data) {
+        DbService.change('edit', TABLE_EMPLOYEES, data)
+            .then(_ => loadData())
+            .catch(e => console.log(e))
     }
 
     useEffect(() => {
@@ -67,7 +95,8 @@ export default function Items(props) {
 
     return (
         <>
-            <h2 className={'text-center mt-5'}>{employee.name}</h2>
+            <h2 className={'text-center mt-5'}>{employee.name}'s items</h2>
+            <Button variant={'dark'} className={'col-2 offset-5'} onClick={handleShow}>EDIT ITEMS</Button>
             <DataTable
                 columns={columns}
                 data={data}
@@ -75,6 +104,28 @@ export default function Items(props) {
                 paginationComponentOptions={paginationOptions}
             />
             <h3 className={'text-center mt-4'}>Total price: {totalPrice}</h3>
+
+            <Modal show={show} animation={false} onHide={handleClose}>
+                <Form onSubmit={onSubmitForm}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Add to {TABLE_ITEMS}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form.Group controlId="formBasicEmail">
+                            <Form.Label>Items:</Form.Label>
+                            <Select options={optionItems} onChange={setItems} isMulti autoFocus/>
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            CLOSE
+                        </Button>
+                        <Button variant="dark" type={'submit'}>
+                            SAVE
+                        </Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
         </>
     )
 }

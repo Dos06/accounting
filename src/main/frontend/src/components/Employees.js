@@ -29,7 +29,8 @@ export default function Employees() {
                         <Button variant={'info'} className={'mr-2'}>DETAILS</Button>
                     </Link>
                     <Button variant={'danger'} onClick={() => {
-                        deleteItem(row.id)
+                        setToDeleteId(row.id)
+                        handleShowDelete()
                     }}>DELETE</Button>
                 </>
             )
@@ -50,15 +51,19 @@ export default function Employees() {
     }
 
     const [data, setData] = useState([]);
-    const [show, setShow] = useState(false);
+    const [toDeleteId, setToDeleteId] = useState(0);
+    const [showAdd, setShowAdd] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
     const [name, setName] = useState('');
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleCloseAdd = () => setShowAdd(false);
+    const handleShowAdd = () => setShowAdd(true);
+    const handleCloseDelete = () => setShowDelete(false);
+    const handleShowDelete = () => setShowDelete(true);
 
     const onChangeName = event => {
         setName(event.target.value);
     }
-    const onSubmitForm = event => {
+    const onSubmitAddForm = event => {
         addItem({name})
             .then(_ => {
                 setName('')
@@ -100,7 +105,7 @@ export default function Employees() {
     return (
         <>
             <h2 className="mt-5 text-center">Employees</h2>
-            <Button variant={'dark'} className={'col-2 offset-5'} onClick={handleShow}>ADD</Button>
+            <Button variant={'dark'} className={'col-2 offset-5'} onClick={handleShowAdd}>ADD</Button>
             <DataTable
                 columns={columns}
                 data={data}
@@ -108,8 +113,23 @@ export default function Employees() {
                 paginationComponentOptions={paginationOptions}
             />
 
-            <Modal show={show} animation={false} onHide={handleClose}>
-                <Form onSubmit={onSubmitForm}>
+            <Modal show={showDelete} animation={false} onHide={handleCloseDelete}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm to delete</Modal.Title>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseDelete}>
+                        CLOSE
+                    </Button>
+                    <Button variant="danger" type={'submit'}
+                            onClick={() => deleteItem(toDeleteId).then(_ => handleCloseDelete())}>
+                        CONFIRM
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showAdd} animation={false} onHide={handleCloseAdd}>
+                <Form onSubmit={onSubmitAddForm}>
                     <Modal.Header closeButton>
                         <Modal.Title>Add to {TABLE_EMPLOYEES}</Modal.Title>
                     </Modal.Header>
@@ -126,7 +146,7 @@ export default function Employees() {
                         </Form.Group>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
+                        <Button variant="secondary" onClick={handleCloseAdd}>
                             CLOSE
                         </Button>
                         <Button variant="dark" type={'submit'}>

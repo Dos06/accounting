@@ -21,6 +21,6 @@ public class Employee {
     @Column
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Item> items = new ArrayList<>();
 }
